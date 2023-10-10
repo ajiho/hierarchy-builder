@@ -1,0 +1,31 @@
+{
+  "name": "ajiho/array-hierarchy",
+  "description": "High performance spanning tree structure",
+  "keywords": [
+    "array tree",
+    "arraytree",
+    "array2tree",
+    "tree",
+    "ajiho"
+  ],
+  "homepage": "https://gitee.com/ajiho/array-hierarchy",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "ajiho\\ArrayHierarchy\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "ajiho",
+      "email": "lujiahao@88.com",
+      "homepage": "https://gitee.com/ajiho",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=7.2"
+  }
+}
