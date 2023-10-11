@@ -27,5 +27,10 @@
   "minimum-stability": "stable",
   "require": {
     "php": ">=7.2"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.x-dev"
+    }
   }
 }
