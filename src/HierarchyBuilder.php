@@ -18,25 +18,25 @@ class HierarchyBuilder
         $this->items = $items;
     }
 
-    protected function setIdField($fieldName)
+    public function setIdField($fieldName)
     {
         $this->idField = $fieldName;
         return $this;
     }
 
-    protected function setLevelField($fieldName)
+    public function setLevelField($fieldName)
     {
         $this->levelField = $fieldName;
         return $this;
     }
 
-    protected function setSonField($fieldName)
+    public function setSonField($fieldName)
     {
         $this->sonField = $fieldName;
         return $this;
     }
 
-    protected function setPidField($fieldName)
+    public function setPidField($fieldName)
     {
         $this->pidField = $fieldName;
         return $this;
@@ -46,7 +46,7 @@ class HierarchyBuilder
     /**
      * 获取无限级分类列表
      */
-    protected function getCateList($pid = 0, $level = 0, $include_self = true)
+    public function getCateList($pid = 0, $level = 0, $include_self = true)
     {
         $sortedNodes = [];
         $parentIdMap = [];
@@ -111,7 +111,7 @@ class HierarchyBuilder
 
 
 
-    protected function getTreeList($pid = 0)
+    public function getTreeList($pid = 0)
     {
         // 将每条数据中的id值作为其下标
         $temp = [];
