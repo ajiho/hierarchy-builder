@@ -1,5 +1,5 @@
 {
-  "name": "ajiho/array-hierarchy",
+  "name": "ajiho/hierarchy-builder",
   "description": "High performance spanning tree structure",
   "keywords": [
     "array tree",
@@ -8,12 +8,12 @@
     "tree",
     "ajiho"
   ],
-  "homepage": "https://gitee.com/ajiho/array-hierarchy",
+  "homepage": "https://gitee.com/ajiho/hierarchy-builder",
   "type": "library",
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "ajiho\\ArrayHierarchy\\": "src/"
+      "ajiho\\": "src/"
     }
   },
   "authors": [
