@@ -18,6 +18,17 @@ class HierarchyBuilder
         $this->items = $items;
     }
 
+    /**
+     * 传递数据得到实例
+     * @param $items
+     * @return self
+     */
+    public static function create($items)
+    {
+        return new self($items);
+    }
+
+
     public function setIdField($fieldName)
     {
         $this->idField = $fieldName;
@@ -46,39 +57,28 @@ class HierarchyBuilder
     /**
      * 获取无限级分类列表
      */
-    public function getCateList($pid = 0, $level = 0, $include_self = true)
+    public function getCateList($pid = 0, $level = 0)
     {
-        $sortedNodes = [];
+        $result = [];
         $parentIdMap = [];
-        $idMap = [];
 
         // 构建父节点ID映射表和id节点映射表
         foreach ($this->items as $item) {
             $parentId = $item[$this->pidField];
-            $id = $item[$this->idField];
 
             if (!isset($parentIdMap[$parentId])) {
                 $parentIdMap[$parentId] = [];
             }
-            if (!isset($idMap[$id])) {
-                $idMap[$id] = [];
-            }
+
             $parentIdMap[$parentId][] = $item;
-            $idMap[$id][] = $item;
         }
 
-
-
-        if (isset($idMap[$pid]) && $include_self === true) {
-            $selfNode = $idMap[$pid][0];
-            $selfNode[$this->levelField] = $level;
-            $sortedNodes[$pid] = $selfNode;
+        if (!isset($parentIdMap[$pid])) {
+            return $result;
         }
-
 
         // 遍历根节点下的所有子节点
         $stack = $parentIdMap[$pid];
-
 
 
         while (!empty($stack)) {
@@ -90,15 +90,14 @@ class HierarchyBuilder
 
             // 计算当前节点的层级
             if ($parentId === $pid) {
-                $node[$this->levelField] = isset($sortedNodes[$parentId][$this->levelField]) ? $sortedNodes[$parentId][$this->levelField] + 1 : $level;
+                $node[$this->levelField] = isset($result[$parentId][$this->levelField]) ? $result[$parentId][$this->levelField] + 1 : $level;
             } else {
-                $node[$this->levelField] = isset($sortedNodes[$parentId][$this->levelField]) ?? $sortedNodes[$parentId][$this->levelField] + 1;
+                $node[$this->levelField] = $result[$parentId][$this->levelField] + 1;
             }
 
 
             // 添加当前节点到排序结果中
-            $sortedNodes[$id] = $node;
-
+            $result[$id] = $node;
 
             if (isset($parentIdMap[$id])) {
                 // 把当前节点的子节点放入堆栈
@@ -106,11 +105,15 @@ class HierarchyBuilder
             }
         }
 
-        return array_values($sortedNodes);
+        return array_values($result);
     }
 
 
-
+    /**
+     * 获取父子级树状结构
+     * @param $pid
+     * @return array
+     */
     public function getTreeList($pid = 0)
     {
         // 将每条数据中的id值作为其下标
@@ -128,6 +131,30 @@ class HierarchyBuilder
         }
 
         return $temp[$pid][$this->sonField] ?? [];
+    }
+
+
+    /**
+     * 获取指定节点的父级节点列表
+     * @param $id
+     * @param $pid
+     * @return array
+     */
+    public function getParentsList($id, $pid = 0)
+    {
+        $temp = [];
+        while ($id != $pid) {
+            foreach ($this->items as $item) {
+
+                if ($item[$this->idField] == $id) {
+                    $temp[] = $item;
+
+                    $id = $item[$this->pidField];
+                    break;
+                }
+            }
+        }
+        return $temp;
     }
 
 }
