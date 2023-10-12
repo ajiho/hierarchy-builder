@@ -62,6 +62,7 @@ class HierarchyBuilder
         $result = [];
         $parentIdMap = [];
 
+
         // 构建父节点ID映射表和id节点映射表
         foreach ($this->items as $item) {
             $parentId = $item[$this->pidField];
@@ -69,13 +70,13 @@ class HierarchyBuilder
             if (!isset($parentIdMap[$parentId])) {
                 $parentIdMap[$parentId] = [];
             }
-
             $parentIdMap[$parentId][] = $item;
         }
 
         if (!isset($parentIdMap[$pid])) {
             return $result;
         }
+
 
         // 遍历根节点下的所有子节点
         $stack = $parentIdMap[$pid];
@@ -84,17 +85,17 @@ class HierarchyBuilder
         while (!empty($stack)) {
             $node = array_shift($stack);
 
+
             $id = $node[$this->idField];
             $parentId = $node[$this->pidField];
 
 
             // 计算当前节点的层级
             if ($parentId === $pid) {
-                $node[$this->levelField] = isset($result[$parentId][$this->levelField]) ? $result[$parentId][$this->levelField] + 1 : $level;
+                $node[$this->levelField] = $level;
             } else {
                 $node[$this->levelField] = $result[$parentId][$this->levelField] + 1;
             }
-
 
             // 添加当前节点到排序结果中
             $result[$id] = $node;
@@ -107,7 +108,6 @@ class HierarchyBuilder
 
         return array_values($result);
     }
-
 
     /**
      * 获取父子级树状结构
@@ -137,12 +137,23 @@ class HierarchyBuilder
     /**
      * 获取指定节点的父级节点列表
      * @param $id
-     * @param $pid
+     * @param mixed $pid
      * @return array
      */
-    public function getParentsList($id, $pid = 0)
+    public function getParents($id, $pid = 0, $include_self = true)
     {
+
         $temp = [];
+
+        // 判断传递进来的id是否存在,不存在直接返回结果,避免陷入死循环
+        $idExists = isset(array_flip(array_column($this->items, $this->idField))[$id]);
+        $pidExists = isset(array_flip(array_column($this->items, $this->pidField))[$pid]);
+
+        if (!$idExists || !$pidExists) {
+            return $temp;
+        }
+
+
         while ($id != $pid) {
             foreach ($this->items as $item) {
 
@@ -154,7 +165,14 @@ class HierarchyBuilder
                 }
             }
         }
+
+
+        if ($include_self === false) {
+            array_shift($temp);
+        }
+
         return $temp;
     }
+
 
 }
